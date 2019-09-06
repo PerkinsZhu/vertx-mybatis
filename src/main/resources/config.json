@@ -1,6 +1,24 @@
 {
   "mybatis": {
-    "basePackage": "com.perkins.mapper"
+    "basePackage": "com.perkins.mapper",
+    "dataSource": [
+      {
+        "basePackage": "com.perkins.mapper3",
+        "url": "jdbc:mysql://localhost:3308/mybatis3?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+        "username": "mybatis",
+        "password": "mybatis",
+        "driverClass": "com.mysql.jdbc.Driver",
+        "driver-class-name": "com.mysql.jdbc.Driver"
+      },
+      {
+        "basePackage": "com.perkins.mapper4",
+        "url": "jdbc:mysql://localhost:3308/mybatis4?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+        "username": "mybatis",
+        "password": "mybatis",
+        "driverClass": "com.mysql.jdbc.Driver",
+        "driver-class-name": "com.mysql.jdbc.Driver"
+      }
+    ]
   },
   "db1.mybatis": {
     "basePackage": "com.perkins.mapperdb1"

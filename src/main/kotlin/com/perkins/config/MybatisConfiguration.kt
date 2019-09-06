@@ -47,7 +47,6 @@ class SpecialDataSourceConfig {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return sessionFactory
     }
 

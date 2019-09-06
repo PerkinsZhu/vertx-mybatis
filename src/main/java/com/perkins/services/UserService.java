@@ -5,15 +5,12 @@ import com.perkins.config.SpecialDataSourceConfig;
 import com.perkins.entity.User;
 import com.perkins.mapper.UserMapper;
 import com.perkins.mapperdb1.UserMapper1;
-import com.perkins.servvice.BookService;
+import com.perkins.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import vts.vertxbeans.rxjava.VertxBeans;
-import vts.vertxmybatis.MybatisConfiguration;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.util.List;
 
 @Service("userService")
