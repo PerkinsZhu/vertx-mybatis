@@ -1,6 +1,6 @@
 {
   "mybatis": {
-    "basePackage": "com.perkins.mapper",
+    "basePackage": "com.perkins",
     "dataSource": [
       {
         "basePackage": "com.perkins.mapper3",
@@ -21,7 +21,7 @@
     ]
   },
   "db1.mybatis": {
-    "basePackage": "com.perkins.mapperdb1"
+    "basePackage": "com.perkins"
   },
   "dataSource": {
     "url": "jdbc:mysql://localhost:3308/mybatis?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
