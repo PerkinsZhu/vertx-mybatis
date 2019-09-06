@@ -3,6 +3,7 @@ package com.perkins.config
 import com.alibaba.druid.pool.DruidDataSource
 import io.vertx.core.json.JsonObject
 import org.mybatis.spring.SqlSessionFactoryBean
+import org.mybatis.spring.mapper.MapperScannerConfigurer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
@@ -16,14 +17,14 @@ import vts.vertxmybatis.MybatisConfiguration as baseMybatisConfig
 
 class BaseMybatisConfig : baseMybatisConfig() {
     val logger = LoggerFactory.getLogger(this.javaClass)
-
+    val prefix = "db1"
 
     @Bean(name = ["basicDataSource"])
     override fun basicDataSource(@Qualifier("mybatisConfiguration") config: JsonObject): DataSource {
         val dataSource = DruidDataSource()
         val properties = Properties()
-        val conf = config.getJsonObject("dataSource", JsonObject())
-        conf.iterator().forEachRemaining { it -> properties["druid." + it.key] = it.value }
+        val conf = config.getJsonObject("$prefix", JsonObject()).getJsonObject("dataSource", JsonObject())
+        conf.iterator().forEachRemaining { properties["druid." + it.key] = it.value }
         dataSource.configFromPropety(properties)
         return dataSource
     }
@@ -36,7 +37,7 @@ class BaseMybatisConfig : baseMybatisConfig() {
         sessionFactory.setDataSource(dataSource)
         try {
             // 设置mybatis configuration 扫描路径
-            val conf = config.getJsonObject("mybatis", JsonObject())
+            val conf = config.getJsonObject("$prefix", JsonObject()).getJsonObject("mybatis", JsonObject())
             val classPathResource = ClassPathResource(conf.getString("configLocation", "mybatis-config.xml"))
             if (classPathResource.exists()) {
                 sessionFactory.setConfigLocation(classPathResource)
@@ -54,5 +55,21 @@ class BaseMybatisConfig : baseMybatisConfig() {
         }
 
         return sessionFactory
+    }
+
+
+    @Bean
+    override fun basicMapperScannerConfigurer(@Qualifier("mybatisConfiguration") config: JsonObject): MapperScannerConfigurer {
+        val mapperScannerConfigurer = MapperScannerConfigurer()
+        val conf = config.getJsonObject("$prefix", JsonObject()).getJsonObject("mybatis", JsonObject())
+        // Dao package path
+        mapperScannerConfigurer.setBasePackage(conf.getString("basePackage"))
+        mapperScannerConfigurer.setSqlSessionFactoryBeanName(
+            conf.getString(
+                "sqlSessionFactoryBeanName",
+                "basicSqlSessionFactory"
+            )
+        )
+        return mapperScannerConfigurer
     }
 }

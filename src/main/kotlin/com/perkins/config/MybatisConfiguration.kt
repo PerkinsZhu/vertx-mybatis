@@ -19,15 +19,13 @@ import javax.sql.DataSource
 @Configurable
 @MapperScan(basePackages = ["com.perkins.mapperdb1"], sqlSessionTemplateRef = "db1SqlSessionTemplate")
 class SpecialDataSourceConfig {
-    val logger = LoggerFactory.getLogger(this.javaClass)
-    private val prefix: String = "db1"
-
+    private val prefix: String = "db2"
     @Bean(name = ["db1DataSource"])
     fun basicDataSource(@Qualifier("mybatisConfiguration") config: JsonObject): DataSource {
         val dataSource = DruidDataSource()
         val properties = Properties()
-        val conf = config.getJsonObject("$prefix.dataSource", JsonObject())
-        conf.iterator().forEachRemaining { it -> properties["druid." + it.key] = it.value }
+        val conf = config.getJsonObject("$prefix", JsonObject()).getJsonObject("dataSource", JsonObject())
+        conf.iterator().forEachRemaining { properties["druid." + it.key] = it.value }
         dataSource.configFromPropety(properties)
         return dataSource
     }
@@ -38,16 +36,13 @@ class SpecialDataSourceConfig {
         val sessionFactory = SqlSessionFactoryBean()
         sessionFactory.setDataSource(dataSource)
         try {
-            // 设置mybatis configuration 扫描路径
-            val conf = config.getJsonObject("db1.mybatis", JsonObject())
-            // 添加mapper 扫描路径
+            val conf = config.getJsonObject("$prefix", JsonObject()).getJsonObject("mybatis", JsonObject())
             val resolver = PathMatchingResourcePatternResolver()
             val mapperXml = resolver.getResources(conf.getString("mapperLocations", "classpath:*Mapper.xml"))
             sessionFactory.setMapperLocations(mapperXml)
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return sessionFactory
     }
 

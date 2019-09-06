@@ -1,22 +1,26 @@
 {
-  "mybatis": {
-    "basePackage": "com.perkins.mapper"
+  "db1": {
+    "mybatis": {
+      "basePackage": "com.perkins.mapper"
+    },
+    "dataSource": {
+      "url": "jdbc:mysql://localhost:3308/mybatis?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+      "username": "mybatis",
+      "password": "mybatis",
+      "driverClass": "com.mysql.jdbc.Driver",
+      "driver-class-name": "com.mysql.jdbc.Driver"
+    }
   },
-  "db1.mybatis": {
-    "basePackage": "com.perkins.mapperdb1"
-  },
-  "dataSource": {
-    "url": "jdbc:mysql://localhost:3308/mybatis?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
-    "username": "mybatis",
-    "password": "mybatis",
-    "driverClass": "com.mysql.jdbc.Driver",
-    "driver-class-name": "com.mysql.jdbc.Driver"
-  },
-  "db1.dataSource": {
-    "url": "jdbc:mysql://localhost:3308/mybatis2?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
-    "username": "mybatis",
-    "password": "mybatis",
-    "driverClass": "com.mysql.jdbc.Driver",
-    "driver-class-name": "com.mysql.jdbc.Driver"
+  "db2": {
+    "mybatis": {
+      "basePackage": "com.perkins.mapperdb1"
+    },
+    "dataSource": {
+      "url": "jdbc:mysql://localhost:3308/mybatis2?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+      "username": "mybatis",
+      "password": "mybatis",
+      "driverClass": "com.mysql.jdbc.Driver",
+      "driver-class-name": "com.mysql.jdbc.Driver"
+    }
   }
 }
