@@ -2,9 +2,10 @@
   "mybatis": {
     "dataSource": [
       {
-        "mapperLocations": "classpath:mybatis/mappers3/*",
+        "mapperLocations": "classpath:mybatis/mappers2/*",
         "scanPackage": [
-          "com.perkins.mapper"
+          "com.perkins.mapper0",
+          "com.perkins.mapper2"
         ],
         "url": "jdbc:mysql://localhost:3306/mybatis?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
         "username": "mybatis",
@@ -13,11 +14,22 @@
         "driver-class-name": "com.mysql.jdbc.Driver"
       },
       {
-        "mapperLocations": "classpath:mybatis/mappers3/*",
         "scanPackage": [
-          "com.perkins.mapper1"
+          "com.perkins.mapper1",
+          "com.perkins.mapper3"
         ],
         "url": "jdbc:mysql://localhost:3306/mybatis2?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+        "username": "mybatis",
+        "password": "mybatis",
+        "driverClass": "com.mysql.jdbc.Driver",
+        "driver-class-name": "com.mysql.jdbc.Driver"
+      },
+      {
+        "mapperLocations": "classpath:mybatis/mappers3/*",
+        "scanPackage": [
+          "com.perkins.mapper3"
+        ],
+        "url": "jdbc:mysql://localhost:3306/mybatis3?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
         "username": "mybatis",
         "password": "mybatis",
         "driverClass": "com.mysql.jdbc.Driver",

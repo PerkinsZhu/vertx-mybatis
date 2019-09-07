@@ -59,6 +59,7 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
                         if (source is FileSystemResource && definition.beanClassName.contains("MapperFactoryBean")) {
                             val classPath = source.path.substringAfter("classes").replace("\\", ".").replace("/", ".").substring(1)
                             if (scanPackage.any { classPath.startsWith(it.toString()) }) {
+                                logger.info("$name set $sqlSessionFactory")
                                 definition.propertyValues.add("sqlSessionTemplate", sqlSessionTemplate)
                                 definition.propertyValues.add("sqlSessionFactory", sqlSessionFactory)
                             }
@@ -82,7 +83,9 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
         sessionFactory.setDataSource(dataSource)
         try {
             val resolver = PathMatchingResourcePatternResolver()
-            val mapperXml = resolver.getResources(config.getString("mapperLocations", "classpath:*Mapper.xml"))
+            val path = config.getString("mapperLocations", "classpath:*Mapper.xml")
+            logger.info("path:$path")
+            val mapperXml = resolver.getResources(path)
             sessionFactory.setMapperLocations(mapperXml)
         } catch (e: IOException) {
             logger.error("create SqlSessionFactoryBean error", e)
