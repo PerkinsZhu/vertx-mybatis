@@ -1,54 +1,48 @@
 package com.perkins.service
 
-import com.perkins.mapper3.UserMapper3
-import com.perkins.mapper4.UserMapper4
+import com.perkins.mapper.UserMapper
+import com.perkins.mapper1.UserMapper1
+import com.perkins.mapper2.User2Mapper
+import com.perkins.mapper3.User3Mapper
 import org.mybatis.spring.annotation.MapperScan
-import org.mybatis.spring.mapper.MapperScannerConfigurer
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner
 import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Service
 import vts.vertxbeans.rxjava.VertxBeans
-import javax.annotation.Resource
-import javax.sql.DataSource
 
 
 @Service("personService")
 @Import(VertxBeans::class)
-@MapperScan(basePackages = ["com.perkins.mapper3","com.perkins.mapper4"])
+@MapperScan(basePackages = ["com.perkins.mapper", "com.perkins.mapper1", "com.perkins.mapper2", "com.perkins.mapper3"])
 class PersonService {
-
-/*    @Resource(name = "dataSource-0")
-    lateinit var dataSource0: DataSource
-
-    @Resource(name = "dataSource-1")
-    lateinit var dataSource1: DataSource
-
-    */
-
-    @Resource(name = "mapperScannerConfigurer-1")
-    lateinit var mapperScanner: MapperScannerConfigurer
-
+    val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    lateinit var mapper3: UserMapper3
-
+    lateinit var mapper: UserMapper
     @Autowired
-    lateinit var mapper4: UserMapper4
-
+    lateinit var mapper1: UserMapper1
+/*    @Autowired
+    lateinit var user2Mapper: User2Mapper*/
+    @Autowired
+    lateinit var user3Mapper: User3Mapper
 
 
     fun show() {
-//        println(dataSource0)
-//        println(dataSource1)
-        println(mapperScanner)
-
-        println("PersonService")
-        mapper3.listUser().forEach { user ->
+        println("=====mapper====")
+        mapper.listUser().forEach { user ->
             println(user)
         }
-        println("=============")
-        mapper4.listUser().forEach { user ->
+        println("=====mapper1====")
+        mapper1.listUser().forEach { user ->
+            println(user)
+        }
+      /*  println("=====user2Mapper====")
+        user2Mapper.listUser().forEach { user ->
+            println(user)
+        }*/
+        println("=====user3Mapper====")
+        user3Mapper.listUser().forEach { user ->
             println(user)
         }
     }
