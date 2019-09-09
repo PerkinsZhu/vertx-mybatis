@@ -5,7 +5,6 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import org.apache.ibatis.session.SqlSessionFactory
 import org.mybatis.spring.SqlSessionFactoryBean
-import org.mybatis.spring.SqlSessionTemplate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
@@ -23,6 +22,8 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
     val logger = LoggerFactory.getLogger(this.javaClass)
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
         val factory: DefaultListableBeanFactory = beanFactory as DefaultListableBeanFactory
+        //TODO 考虑把所有的配置文件参数校验集中到一个检验类中，系统启动时对配置文件做校验，校验失败则不启动
+        //TODO  禁止每个service直接从json文件中去参数，而是通过封装的工具类来取值
         val mybatisConfiguration = beanFactory.getBean("config")
         val config = mybatisConfiguration as JsonObject
         val dataSourceList = config.getJsonObject("mybatis", JsonObject()).getJsonArray("dataSource", JsonArray())
@@ -49,8 +50,7 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
 
     private fun createTransactionManager(dataSource: DataSource): DataSourceTransactionManager {
         val transactionManager = DataSourceTransactionManager()
-        /*rollbackOnCommitFailure 状态被设置为true,则表示如果在事务提交过程中出现异常,需要回滚事务*/
-        // transactionManager.setRollbackOnCommitFailure(true);
+        //这里可以接受一些用户需要配置的参数
         transactionManager.dataSource = dataSource
         return transactionManager
     }
