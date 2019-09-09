@@ -18,7 +18,7 @@ import vts.vertxbeans.rxjava.VertxBeans
 @Service("personService")
 @Import(VertxBeans::class)
 @MapperScan(basePackages = ["com.perkins.mapper0", "com.perkins.mapper1", "com.perkins.mapper2", "com.perkins.mapper3"])
-@EnableTransactionManagement
+//@EnableTransactionManagement
 open class PersonService {
     val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -52,7 +52,7 @@ open class PersonService {
 
     // 夸数据源事务时，该配置不生效
     // value 指定该事务使用哪个    transactionManager，默认格式：transactionManager-${dataSourceName}
-    @Transactional(value = "transactionManager-1")
+    @Transactional(value = "transactionManager-db1")
     open fun transactionalTest() {
         val user = User()
         user.name = "aaa"
@@ -65,7 +65,7 @@ open class PersonService {
         println(id2)
         println(user.id)
 
-        1 / 0
+//        1 / 0
         mapper0.listUser()
     }
 
