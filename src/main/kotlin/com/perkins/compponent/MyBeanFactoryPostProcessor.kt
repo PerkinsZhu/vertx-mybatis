@@ -39,15 +39,11 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
             val sqlSessionFactoryBeanName = "sqlSessionFactoryBean-$index"
             beanFactory.registerSingleton(sqlSessionFactoryBeanName, sqlSessionFactoryBean)
 
-            val sqlSessionTemplateBeanName = "sqlSessionTemplateBean-$index"
-            val sqlSessionTemplate = SqlSessionTemplate(sqlSessionFactoryBean.`object`)
-            beanFactory.registerSingleton(sqlSessionTemplateBeanName, sqlSessionTemplate)
-
             val transactionManager = createTransactionManager(dataSource)
             val transactionManagerName = config.getString("name", "$index")
             beanFactory.registerSingleton("transactionManager-$transactionManagerName", transactionManager)
 
-            updateMapperDataSource(sqlSessionFactoryBean.`object`, sqlSessionTemplate, config, beanFactory)
+            updateMapperDataSource(sqlSessionFactoryBean.`object`, config, beanFactory)
         }
     }
 
@@ -61,7 +57,6 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
 
     private fun updateMapperDataSource(
         sqlSessionFactory: SqlSessionFactory,
-        sqlSessionTemplate: SqlSessionTemplate,
         config: JsonObject,
         beanFactory: DefaultListableBeanFactory
     ) {
@@ -80,7 +75,6 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
                                 source.path.substringAfter("classes").replace("\\", ".").replace("/", ".").substring(1)
                             if (scanPackage.any { classPath.startsWith(it.toString()) }) {
                                 logger.info("$name set $sqlSessionFactory")
-                                definition.propertyValues.add("sqlSessionTemplate", sqlSessionTemplate)
                                 definition.propertyValues.add("sqlSessionFactory", sqlSessionFactory)
                             }
                         }
