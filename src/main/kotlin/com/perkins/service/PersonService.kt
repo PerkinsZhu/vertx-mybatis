@@ -52,7 +52,7 @@ open class PersonService {
 
     // 夸数据源事务时，该配置不生效
     // value 指定该事务使用哪个    transactionManager，默认格式：transactionManager-${dataSourceName}
-    @Transactional(value = "transactionManager-1")
+    @Transactional
     open fun transactionalTest() {
         val user = User()
         user.name = "aaa"

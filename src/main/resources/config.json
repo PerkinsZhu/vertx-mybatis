@@ -2,7 +2,9 @@
   "mybatis": {
     "dataSource": [
       {
+        "configLocation":"mybatis/setting-1.xml",
         "name":"db1",
+        "environmentId":"db1",
         "mapperLocations": "classpath:mybatis/mappers2/*",
         "scanPackage": [
           "com.perkins.mapper0",
@@ -15,6 +17,8 @@
         "driver-class-name": "com.mysql.jdbc.Driver"
       },
       {
+        "configLocation":"mybatis/setting-1.xml",
+        "environmentId":"db2",
         "scanPackage": [
           "com.perkins.mapper1",
           "com.perkins.mapper3"

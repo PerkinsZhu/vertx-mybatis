@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
+import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
@@ -27,6 +28,7 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
         val config = mybatisConfiguration as JsonObject
         val dataSourceList = config.getJsonObject("mybatis", JsonObject()).getJsonArray("dataSource", JsonArray())
         registerDataSourceDefinitions(dataSourceList, factory)
+        println("====")
     }
 
 
@@ -43,9 +45,9 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
             val sqlSessionTemplate = SqlSessionTemplate(sqlSessionFactoryBean.`object`)
             beanFactory.registerSingleton(sqlSessionTemplateBeanName, sqlSessionTemplate)
 
-            val transactionManager = createTransactionManager(dataSource)
+/*            val transactionManager = createTransactionManager(dataSource)
             val transactionManagerName = config.getString("name", "$index")
-            beanFactory.registerSingleton("transactionManager-$transactionManagerName", transactionManager)
+            beanFactory.registerSingleton("transactionManager-$transactionManagerName", transactionManager)*/
 
             updateMapperDataSource(sqlSessionFactoryBean.`object`, sqlSessionTemplate, config, beanFactory)
         }
@@ -102,6 +104,16 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
         val sessionFactory = SqlSessionFactoryBean()
         sessionFactory.setDataSource(dataSource)
         try {
+            // 设置mybatis configuration 扫描路径
+            val environmentId = config.getString("environmentId", "dev")
+            val pathtemp = config.getString("configLocation", "mybatis-config.xml")
+            val classPathResource = ClassPathResource(pathtemp)
+            if (classPathResource.exists()) {
+                sessionFactory.setConfigLocation(classPathResource)
+                logger.info("environmentId --> $environmentId")
+                sessionFactory.setEnvironment(environmentId)
+            }
+
             val resolver = PathMatchingResourcePatternResolver()
             val path = config.getString("mapperLocations", "classpath:*Mapper.xml")
             logger.info("path:$path")
