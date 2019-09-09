@@ -12,6 +12,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.util.*
@@ -41,11 +42,29 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
             val sqlSessionTemplateBeanName = "sqlSessionTemplateBean-$index"
             val sqlSessionTemplate = SqlSessionTemplate(sqlSessionFactoryBean.`object`)
             beanFactory.registerSingleton(sqlSessionTemplateBeanName, sqlSessionTemplate)
+
+            val transactionManager = createTransactionManager(dataSource)
+            val transactionManagerName = config.getString("name", "$index")
+            beanFactory.registerSingleton("transactionManager-$transactionManagerName", transactionManager)
+
             updateMapperDataSource(sqlSessionFactoryBean.`object`, sqlSessionTemplate, config, beanFactory)
         }
     }
 
-    private fun updateMapperDataSource(sqlSessionFactory: SqlSessionFactory, sqlSessionTemplate: SqlSessionTemplate, config: JsonObject, beanFactory: DefaultListableBeanFactory) {
+    private fun createTransactionManager(dataSource: DataSource): DataSourceTransactionManager {
+        val transactionManager = DataSourceTransactionManager()
+        /*rollbackOnCommitFailure 状态被设置为true,则表示如果在事务提交过程中出现异常,需要回滚事务*/
+        // transactionManager.setRollbackOnCommitFailure(true);
+        transactionManager.dataSource = dataSource
+        return transactionManager
+    }
+
+    private fun updateMapperDataSource(
+        sqlSessionFactory: SqlSessionFactory,
+        sqlSessionTemplate: SqlSessionTemplate,
+        config: JsonObject,
+        beanFactory: DefaultListableBeanFactory
+    ) {
         val scanPackage = config.getJsonArray("scanPackage", JsonArray())
         when (scanPackage.isEmpty) {
             true -> {
@@ -57,7 +76,8 @@ class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
                         val definition = beanFactory.getBeanDefinition(name)
                         val source = definition.source
                         if (source is FileSystemResource && definition.beanClassName.contains("MapperFactoryBean")) {
-                            val classPath = source.path.substringAfter("classes").replace("\\", ".").replace("/", ".").substring(1)
+                            val classPath =
+                                source.path.substringAfter("classes").replace("\\", ".").replace("/", ".").substring(1)
                             if (scanPackage.any { classPath.startsWith(it.toString()) }) {
                                 logger.info("$name set $sqlSessionFactory")
                                 definition.propertyValues.add("sqlSessionTemplate", sqlSessionTemplate)
