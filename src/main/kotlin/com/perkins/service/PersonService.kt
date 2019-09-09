@@ -18,7 +18,7 @@ import vts.vertxbeans.rxjava.VertxBeans
 @Service("personService")
 @Import(VertxBeans::class)
 @MapperScan(basePackages = ["com.perkins.mapper0", "com.perkins.mapper1", "com.perkins.mapper2", "com.perkins.mapper3"])
-//@EnableTransactionManagement
+@EnableTransactionManagement
 open class PersonService {
     val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -31,7 +31,7 @@ open class PersonService {
     @Autowired
     lateinit var user3Mapper: User3Mapper
 
-    fun show() {
+    open fun show() {
         println("=====mapper0====")
         mapper0.listUser().forEach { user ->
             println(user)
