@@ -50,8 +50,9 @@ open class PersonService {
         }
     }
 
-    // 夸数据源事务时，该配置不生效
-    // value 指定该事务使用哪个    transactionManager，默认格式：transactionManager-${dataSourceName}
+    // 跨数据源事务时，该配置不生效。同一数据源不同的mapper可以生效
+    // value 指定该事务使用哪个transactionManager，默认格式：transactionManager-${dataSource.name}
+    // 这里必须要指定Transactional.name ,应为多个数据源中，程序无法判断该mapper使用的是哪个Transactional
     @Transactional(value = "transactionManager-db1")
     open fun transactionalTest() {
         val user = User()
@@ -65,7 +66,12 @@ open class PersonService {
         println(id2)
         println(user.id)
 
-//        1 / 0
+        val id3 = user2Mapper.save(user)
+        println(id3)
+        println(user.id)
+
+
+        1 / 0
         mapper0.listUser()
     }
 

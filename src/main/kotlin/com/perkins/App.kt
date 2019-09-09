@@ -13,8 +13,8 @@ object AppKotlin {
     private fun testPersonService() {
         val appContext = AnnotationConfigApplicationContext("com.perkins")
         val userService = appContext.getBean(PersonService::class.java)
-        userService.show()
-//        userService.transactionalTest()
+//        userService.show()
+        userService.transactionalTest()
     }
 
 }
